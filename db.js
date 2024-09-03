@@ -1,5 +1,5 @@
-import mysql from "mysql";
-import { config } from "dotenv";
+const mysql = require("mysql");
+const { config } = require("dotenv");
 config();
 
 const connection = mysql.createConnection({
@@ -11,18 +11,34 @@ const connection = mysql.createConnection({
 });
 
 async function start() {
-  const dataToCheck = connection.connect(function (err) {
-    if (err) {
-      console.error("error connecting: " + err.stack);
-      return;
+    try {
+        connection.connect(function(err) {
+            if (err) {
+              console.error('error connecting: ' + err.stack);
+              return;
+            }
+           
+            console.log('connected as id ' + connection.threadId);
+            module.exports = connection
+            const app = require ("./app")
+            app.listen(process.env.PORT, ()=> {
+                console.log("Server Listening on port "+process.env.PORT);
+            })
+
+            connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+                if (error) throw error;
+                console.log('The solution is: ', results[0].solution);
+              });
+               
+              connection.end();
+          });
+
+    } catch (e) {
+        console.log(e)
     }
-    console.log("Connected to MYSQL! connection thread ID:" + connection.threadId);
 
 
-    const app = require("./app");
-    app.listen(process.env.PORT);
-    console.log(dataToCheck.toString());
-  });
+    module.exports = connection
 }
 
 start();

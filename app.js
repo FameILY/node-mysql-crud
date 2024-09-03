@@ -1,10 +1,10 @@
-import express from 'express'; 
+const express = require('express');
 //difference between let and const, is that let can be reassigned
 //npm install connect-mongo
 // const session = require("express-session");
 // const MongoStore = require("connect-mongo");
 // const fileUpload = require("express-fileupload");
-const router = require("./router");
+const router = require("./routes/router");
 const cors = require("cors");
 // const process = require("process");
 
